@@ -1,0 +1,24 @@
+# Pocket Karaoke (Go + SQLite) — karaoke at home: songs from uploads, YouTube and Pocket Music with timed words; nights with a big screen and guests on their phones.
+services:
+  pocket-karaoke:
+    image: ghcr.io/abjelosevic88/pocket-homelab-karaoke:latest
+    container_name: pocket-karaoke
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: ${TZ:-Europe/Berlin}
+      BASE_URL: ${BASE_URL:-http://localhost:8080}
+      # SECURE_COOKIES: "true"          # behind HTTPS
+      # First admin (only used while the database has no users):
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      NOTIFY_URL: ${NOTIFY_URL:-}
+      # Pocket Core: one sign-in, Pocket AI, and app links to Pocket Music, Files, Photos, Calendar, Chat, Contacts, Translate, Habits and Alerts.
+      # DOWNLOADS: "off"               # never keep copies of YouTube songs (no yt-dlp)
+      # CORE_URL: http://pocket-core:8080
+      # CORE_REGISTRATION_KEY: ${CORE_REGISTRATION_KEY}
+    volumes:
+      - ./data:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

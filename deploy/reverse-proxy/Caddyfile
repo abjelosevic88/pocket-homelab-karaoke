@@ -1,0 +1,9 @@
+# Pocket Karaoke behind Caddy.
+karaoke.example.com {
+	request_body {
+		max_size 2GB
+	}
+	reverse_proxy pocket-karaoke:8080 {
+		flush_interval -1
+	}
+}

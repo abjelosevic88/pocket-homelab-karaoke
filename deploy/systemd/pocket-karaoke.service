@@ -1,0 +1,23 @@
+[Unit]
+Description=Pocket Karaoke — karaoke at home: songs, timed words, nights with a big screen
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pocket-karaoke
+Group=pocket-karaoke
+ExecStart=/usr/local/bin/pocket-karaoke
+Environment=DATA_DIR=/var/lib/pocket-karaoke
+Environment=PORT=8080
+Environment=BASE_URL=https://karaoke.example.com
+Environment=SECURE_COOKIES=true
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/pocket-karaoke
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
