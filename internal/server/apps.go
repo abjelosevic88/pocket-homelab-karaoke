@@ -173,7 +173,7 @@ func (s *Server) handleMusicAdd(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		m, _ := v.(map[string]any)
-		if inner := obj(m, "song"); inner != nil {
+		if inner, ok := m["song"].(map[string]any); ok {
 			m = inner
 		}
 		so := &store.Song{UserID: u.ID, Title: firstNonEmpty(cleanText(str(m, "title"), maxName), "Untitled song"), Artist: cleanText(str(m, "artist"), maxName), Kind: "original",
