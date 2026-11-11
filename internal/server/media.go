@@ -176,21 +176,36 @@ func safeName(n string) string {
 	return firstNonEmpty(clip(strings.TrimSpace(n), 160), "file")
 }
 
+var (
+	reInStyle      = regexp.MustCompile(`(?i)[\(\[]?\s*\bin the style of\s+([^\)\]]+?)\s*[\)\]]?\s*$`)
+	reTrailKaraoke = regexp.MustCompile(`(?i)\s*[-|–]?\s*\b(karaoke( version)?|instrumental( version)?|minus one)\s*$`)
+)
+
 // titleFromFile guesses "Artist - Title (Karaoke)" from a file name.
 func titleFromFile(name string) (title, artist string, karaoke bool) {
 	base := strings.TrimSuffix(filepath.Base(name), filepath.Ext(name))
 	base = strings.ReplaceAll(base, "_", " ")
 	low := strings.ToLower(base)
 	karaoke = strings.Contains(low, "karaoke") || strings.Contains(low, "instrumental") || strings.Contains(low, "backing track")
+	// "Song in the Style of Artist" (karaoke channels): the artist is named there
+	styleArtist := ""
+	if t := reTrailKaraoke.ReplaceAllString(base, ""); t != base {
+		base, karaoke = t, true
+	}
+	if m := reInStyle.FindStringSubmatch(base); m != nil {
+		styleArtist = strings.Trim(strings.TrimSpace(m[1]), `"'“”`)
+		base = strings.TrimSpace(base[:strings.Index(base, m[0])])
+		karaoke = true
+	}
 	base = regexp.MustCompile(`(?i)\s*[\(\[][^\)\]]*(karaoke|instrumental|backing|lyrics?|official|video|audio|hd|hq)[^\)\]]*[\)\]]`).ReplaceAllString(base, "")
 	base = regexp.MustCompile(`^\s*(\d{1,3}[\s.\-_]+)`).ReplaceAllString(base, "")
 	base = strings.Join(strings.Fields(base), " ")
 	for _, sep := range []string{" - ", " – ", " — ", " | "} {
 		if i := strings.Index(base, sep); i > 0 {
-			return strings.TrimSpace(base[i+len(sep):]), strings.TrimSpace(base[:i]), karaoke
+			return strings.TrimSpace(base[i+len(sep):]), firstNonEmpty(styleArtist, strings.TrimSpace(base[:i])), karaoke
 		}
 	}
-	return strings.TrimSpace(base), "", karaoke
+	return strings.TrimSpace(base), styleArtist, karaoke
 }
 
 // ---- ffprobe: length and tags, when the box has it ----

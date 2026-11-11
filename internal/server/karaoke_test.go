@@ -430,6 +430,15 @@ func TestLyricsAndYouTube(t *testing.T) {
 	if ti, ar, k := titleFromFile("01 - ABBA - Dancing Queen (Karaoke Version).mp4"); ti != "Dancing Queen" || ar != "ABBA" || !k {
 		t.Fatalf("file name: %q %q %v", ti, ar, k)
 	}
+	for in, want := range map[string][2]string{
+		`Twinkle, Twinkle Little Star in the Style of "Traditional" karaoke.x`: {"Twinkle, Twinkle Little Star", "Traditional"},
+		"Dancing Queen (in the style of ABBA) Karaoke Version.x":               {"Dancing Queen", "ABBA"},
+		"Bohemian Rhapsody - Karaoke.x":                                        {"Bohemian Rhapsody", ""},
+	} {
+		if ti, ar, _ := titleFromFile(in); ti != want[0] || ar != want[1] {
+			t.Errorf("titleFromFile(%q) = %q, %q", in, ti, ar)
+		}
+	}
 	if guessLanguage("Ajde Jano, kolo da igramo, ajde dušo, što je ljubav") != "sr" || guessLanguage("I love you and you love me, the end") != "en" {
 		t.Fatal("language guess")
 	}
