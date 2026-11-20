@@ -77,4 +77,6 @@ Times are ISO 8601 UTC; a night's `starts_at` is the local `YYYY-MM-DDTHH:MM` it
 
 `GET /home`, `GET /summary` (Homepage), `GET /day/YYYY-MM-DD` (Pocket Day), `GET /search?q=` (songs by title, artist or a line of their words; singers; nights), `GET /export.json`, `GET /export.csv`, `POST /import`, `GET /backup` (admins).
 
+Pocket Move can copy your karaoke out and bring it in: `GET /pocket/portable` describes the exports (link scope `move:export`) and the import (`move:import`, the export JSON as the raw body; the counts come back under `added` and at the top level). Importing the same file again adds nothing.
+
 Linked apps (Pocket Core) get `karaoke:read` (the GETs above) and `karaoke:write` (`POST /songs`, `PUT/DELETE /songs/ID` and `/nights/ID` for what that app added, `POST /nights`, `POST /nights/ID/queue`, `GET /youtube/search`). Events: `karaoke.song_added`, `karaoke.night_planned`, `karaoke.night_started`, `karaoke.performed`, `karaoke.night_ended`.

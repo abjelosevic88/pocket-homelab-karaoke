@@ -50,6 +50,7 @@ func (s *Server) Router() http.Handler {
 			r.Put("/performances/{id}/recording", s.handleRecording)
 			r.Post("/import", s.handleImport)
 			r.Get("/export.json", s.handleExportJSON)
+			r.Get(strings.TrimPrefix(core.PortablePath, "/api/v1"), portable.Handler())
 		})
 		r.Get("/public/screen/{key}/stream", s.handleScreenStream)
 		r.Get("/public/screen/{key}/songs/{id}/media", s.handleScreenMedia)

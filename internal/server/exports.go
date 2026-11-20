@@ -269,7 +269,8 @@ func (s *Server) importDoc(ctx context.Context, u *store.User, doc *exportDoc) (
 		seen[perfKey(p)] = true
 		added["performances"]++
 	}
-	return map[string]any{"ok": true, "added": added, "text": fmt.Sprintf("Added %d songs, %d singers, %d song books, %d nights and %d performances", added["songs"], added["singers"], added["books"], added["nights"], added["performances"])}, nil
+	// the counts also at the top level: what Pocket Move shows
+	return map[string]any{"ok": true, "added": added, "songs": added["songs"], "singers": added["singers"], "books": added["books"], "nights": added["nights"], "performances": added["performances"], "text": fmt.Sprintf("Added %d songs, %d singers, %d song books, %d nights and %d performances", added["songs"], added["singers"], added["books"], added["nights"], added["performances"])}, nil
 }
 
 func derefS(p *string) string {
